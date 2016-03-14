@@ -1,4 +1,5 @@
 const { Observable } = require('rx');
+const { run } = require('./run.js');
 
 const button = document.createElement('button');
 button.innerHTML= 'Add';
@@ -9,12 +10,12 @@ app.appendChild(label);
 app.appendChild(button);
 
 /*
-  Cycle.js toy version, v3
+  Cycle.js toy version, v4
 */
 
 // Logic
-function main(DOMSource) {
-  const click$ = DOMSource;
+function main(sources) {
+  const click$ = sources.DOM;
   return {
     DOM: click$
       .map(e => 1).scan((p, c) => p + c)
@@ -30,15 +31,6 @@ function DOMDriver(label$) {
 
   const DOMSource = Rx.Observable.fromEvent(button, 'click');
   return DOMSource;
-}
-
-// Nor logic, nor effect, just ties everything up together
-// Adding proxyDOMSource to solve the infinite cycle problem
-function run(mainFn, drivers) {
-  const proxyDOMSource = new Rx.Subject();
-  const sinks = mainFn(proxyDOMSource);
-  const DOMSource = drivers.DOM(sinks.DOM);
-  DOMSource.subscribe(click => proxyDOMSource.onNext(click));
 }
 
 // These map the effects to the same keys we have in our main function
