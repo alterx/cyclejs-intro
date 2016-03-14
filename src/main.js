@@ -9,7 +9,7 @@ app.appendChild(label);
 app.appendChild(button);
 
 /*
-  Cycle.js toy version, v1
+  Cycle.js toy version, v2
 */
 
 // Logic
@@ -21,7 +21,7 @@ function main() {
 }
 
 // Effect
-function DOMEffect(label$) {
+function DOMDriver(label$) {
   label$.subscribe(text => {
     const container = document.querySelector('label');
     container.textContent = 'Count: ' + text;
@@ -29,9 +29,17 @@ function DOMEffect(label$) {
 }
 
 // Nor logic, nor effect, just ties everything up together
-function run(mainFn) {
+// Making it more generic by sending an object with the available effects
+function run(mainFn, drivers) {
   const sinks = mainFn();
-  DOMEffect(sinks.DOM);
+  Object.keys(drivers).forEach(key => {
+    drivers[key](sinks[key])
+  });
 }
 
-run(main);
+// These map the effects to the same keys we have in our main function
+const drivers = {
+  DOM: DOMDriver
+};
+
+run(main, drivers);
