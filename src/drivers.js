@@ -1,4 +1,31 @@
-// Effect
+function h(tagName, children) {
+  return {
+    tagName: tagName,
+    children: children
+  };
+}
+
+function div(children) {
+  return {
+    tagName: 'DIV',
+    children: children
+  };
+}
+
+function span(children) {
+  return {
+    tagName: 'SPAN',
+    children: children
+  };
+}
+
+function button(children) {
+  return {
+    tagName: 'BUTTON',
+    children: children
+  };
+}
+
 function DOMDriver(obj$) {
   function createElement(obj) {
     const element = document.createElement(obj.tagName);
@@ -29,5 +56,9 @@ function DOMDriver(obj$) {
 }
 
 export {
-  DOMDriver
+  DOMDriver,
+  h,
+  div,
+  span,
+  button
 }

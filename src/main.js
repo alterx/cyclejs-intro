@@ -1,9 +1,9 @@
 const { Observable } = require('rx');
 const { run } = require('@cycle/core');
-const { DOMDriver } = require('./drivers.js');
+const { DOMDriver, div, span, button } = require('./drivers.js');
 
 /*
-  Cycle.js toy version, v5
+  Cycle.js toy version, using cycle.js core and h-like syntax
 */
 
 // Logic
@@ -14,25 +14,16 @@ function main(sources) {
     .map(e => 1)
     .startWith(0)
     .scan((p, c) => p + c)
-    .map(i => {
-      return {
-        tagName: 'DIV',
-        children: [
-          {
-            tagName: 'SPAN',
-            children: [
-              `Count: ${i}`
-            ]
-          },
-          {
-            tagName: 'BUTTON',
-            children: [
-              'Add'
-            ]
-          }
-        ]
-      }
-    })
+    .map(i =>
+      div([
+        span([
+          `Count: ${i}`
+        ]),
+        button([
+          'Add'
+        ])
+      ])
+    )
   };
 
   return sinks;
