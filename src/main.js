@@ -1,36 +1,41 @@
 const { Observable } = require('rx');
-const { run } = require('./run.js');
-
-const button = document.createElement('button');
-button.innerHTML= 'Add';
-const label = document.createElement('label');
-label.innerHTML = 'Count: 0';
-const app = document.querySelector('#app');
-app.appendChild(label);
-app.appendChild(button);
+const { run } = require('@cycle/core');
+const { DOMDriver } = require('./drivers.js');
 
 /*
-  Cycle.js toy version, v4
+  Cycle.js toy version, v5
 */
 
 // Logic
 function main(sources) {
-  const click$ = sources.DOM;
-  return {
+  const click$ = sources.DOM.selectEvents('button', 'click');
+  const sinks = {
     DOM: click$
-      .map(e => 1).scan((p, c) => p + c)
+    .map(e => 1)
+    .startWith(0)
+    .scan((p, c) => p + c)
+    .map(i => {
+      return {
+        tagName: 'DIV',
+        children: [
+          {
+            tagName: 'SPAN',
+            children: [
+              `Count: ${i}`
+            ]
+          },
+          {
+            tagName: 'BUTTON',
+            children: [
+              'Add'
+            ]
+          }
+        ]
+      }
+    })
   };
-}
 
-// Effect
-function DOMDriver(label$) {
-  label$.subscribe(text => {
-    const container = document.querySelector('label');
-    container.textContent = 'Count: ' + text;
-  });
-
-  const DOMSource = Rx.Observable.fromEvent(button, 'click');
-  return DOMSource;
+  return sinks;
 }
 
 // These map the effects to the same keys we have in our main function
