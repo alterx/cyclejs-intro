@@ -1,0 +1,22 @@
+{
+  "name": "cyclejs-intro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --content-base build/"
+  },
+  "dependencies": {
+    "rx": "2.4.10"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "1.6.1",
+    "webpack-dev-server": "1.14.1",
+    "webpack": "1.12.13",
+    "babel-loader": "6.2.4",
+    "babel-preset-stage-0": "6.5.0",
+    "babel-preset-es2015": "6.6.0"
+  },
+  "author": "Carlos Vega",
+  "license": "MIT"
+}
