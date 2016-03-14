@@ -9,13 +9,14 @@ app.appendChild(label);
 app.appendChild(button);
 
 /*
-  Cycle.js toy version, v2
+  Cycle.js toy version, v3
 */
 
 // Logic
-function main() {
+function main(DOMSource) {
+  const click$ = DOMSource;
   return {
-    DOM: Rx.Observable.fromEvent(button, 'click')
+    DOM: click$
       .map(e => 1).scan((p, c) => p + c)
   };
 }
@@ -26,15 +27,18 @@ function DOMDriver(label$) {
     const container = document.querySelector('label');
     container.textContent = 'Count: ' + text;
   });
+
+  const DOMSource = Rx.Observable.fromEvent(button, 'click');
+  return DOMSource;
 }
 
 // Nor logic, nor effect, just ties everything up together
-// Making it more generic by sending an object with the available effects
+// Adding proxyDOMSource to solve the infinite cycle problem
 function run(mainFn, drivers) {
-  const sinks = mainFn();
-  Object.keys(drivers).forEach(key => {
-    drivers[key](sinks[key])
-  });
+  const proxyDOMSource = new Rx.Subject();
+  const sinks = mainFn(proxyDOMSource);
+  const DOMSource = drivers.DOM(sinks.DOM);
+  DOMSource.subscribe(click => proxyDOMSource.onNext(click));
 }
 
 // These map the effects to the same keys we have in our main function
