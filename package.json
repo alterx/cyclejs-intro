@@ -7,6 +7,8 @@
     "start": "webpack-dev-server --content-base build/"
   },
   "dependencies": {
+    "@cycle/core": "^6.0.3",
+    "@cycle/dom": "^9.1.0",
     "rx": "2.4.10"
   },
   "devDependencies": {

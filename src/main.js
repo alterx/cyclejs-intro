@@ -1,14 +1,14 @@
 const { Observable } = require('rx');
 const { run } = require('@cycle/core');
-const { DOMDriver, div, span, button } = require('./drivers.js');
+const { makeDOMDriver, div, span, button } = require('@cycle/dom');
 
 /*
-  Cycle.js toy version, using cycle.js core and h-like syntax
+  Cycle.js real version
 */
 
 // Logic
 function main(sources) {
-  const click$ = sources.DOM.selectEvents('button', 'click');
+  const click$ = sources.DOM.select('button').events('click');
   const sinks = {
     DOM: click$
     .map(e => 1)
@@ -31,7 +31,7 @@ function main(sources) {
 
 // These map the effects to the same keys we have in our main function
 const drivers = {
-  DOM: DOMDriver
+  DOM: makeDOMDriver('#app')
 };
 
 run(main, drivers);
