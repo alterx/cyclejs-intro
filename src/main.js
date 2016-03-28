@@ -1,45 +1,38 @@
-const { Observable } = require('rx');
-const { run } = require('@cycle/core');
-const { makeDOMDriver, div, span, button } = require('@cycle/dom');
+import { Observable } from 'rx';
+import { run } from '@cycle/core';
+import { makeDOMDriver, div, span, button } from '@cycle/dom';
+import { makeHTTPDriver } from '@cycle/http';
+import { List } from './components/list.js';
 
-/*
-  Cycle.js real version, MVI
-*/
+function main(sources) {
+  const URL = 'http://shouldiuse.azurewebsites.net/api/repositories';
+  let request$ = Rx.Observable.just({
+    url: URL,
+    method: 'GET',
+    query: {
+      search: 'react'
+    }
+  });
+  let props$ = sources.HTTP
+    .filter(res$ => res$.request.url === URL)
+    .mergeAll();
 
-// Logic
-
-function intent(DOM) {
+  const childSources = {
+    DOM: sources.DOM,
+    props$: props$
+  };
+  const list = List(childSources);
+  const vtree$ = list.DOM;
+  
   return {
-    clicks$: DOM.select('button').events('click')
+    DOM: vtree$,
+    HTTP: request$
   };
 }
 
-function model(actions) {
-  return actions.clicks$.map(e => 1).startWith(0).scan((p, c) => p + c);
-}
-
-function view(state$) {
-  return state$.map(i =>
-    div([
-      span([
-        `Count: ${i}`
-      ]),
-      button([
-        'Add'
-      ])
-    ])
-  );
-}
-
-function main({DOM}) { // sources
-  return {
-    DOM: view(model(intent(DOM)))
-  };
-}
-
-// These map the effects to the same keys we have in our main function
 const drivers = {
-  DOM: makeDOMDriver('#app')
+  DOM: makeDOMDriver('#app'),
+  HTTP: makeHTTPDriver()
 };
 
 run(main, drivers);

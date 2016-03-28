@@ -9,7 +9,11 @@
   "dependencies": {
     "@cycle/core": "^6.0.3",
     "@cycle/dom": "^9.1.0",
-    "rx": "2.4.10"
+    "@cycle/http": "^8.2.2",
+    "@cycle/isolate": "^1.2.0",
+    "@cycle/jsonp": "^5.0.1",
+    "rx": "2.4.10",
+    "whatwg-fetch": "^0.11.0"
   },
   "devDependencies": {
     "html-webpack-plugin": "1.6.1",
